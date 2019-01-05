@@ -100,4 +100,10 @@ async def _bot():
     """Is the bot cool?"""
     await bot.say('Yes, the bot is cool.')
 
-#bot.run('BOT TOKEN NEEDS TO GO HERE, OBVIOUSLY I DON"T WANT TO PUT THAT IN A PUBLIC REPO')
+def readInToken():
+	"""only used on startup to read in bot token"""
+	with open("token", "r") as f:
+		return f.read()
+		
+token = readInToken()
+bot.run(token)
