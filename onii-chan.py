@@ -8,13 +8,22 @@ There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='onii-chan ', description=description)
 
 
-@bot.event		
+@bot.event
 async def on_ready():
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
     await bot.change_presence(game=discord.Game(name="Kiss x Sis"), status=True, afk=False)
+
+
+@bot.command(pass_context=True)
+async def hirigana(ctx):
+    channel = ctx.message.channel
+    pdf = "./Resources/pdf/hiragana_chart.pdf"
+    png = "./Resources/png/hiragana_chart.png"
+    await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
+    await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
 
 
 @bot.command(pass_context=True)
@@ -37,19 +46,21 @@ async def move(ctx, userMovingID, channelSentToName):
         channelSentTo = ctx.message.server._channels[channelSentToName]
 
         await discord.Client.move_channel(userMovingMember, channelSentTo, 1)
-        await bot.say('Onii-chan moved {0} to {1} like you asked {2}!'.format(str(userMoving), str(channelSentTo), str(sender)))
+        await bot.say(
+            'Onii-chan moved {0} to {1} like you asked {2}!'.format(str(userMoving), str(channelSentTo), str(sender)))
     except Exception as e:
         await bot.say("Uh oh, looks like somethings wrong! Do you need onii-chan help?")
     print()
 
+
 @bot.command()
-async def add(left : int, right : int):
+async def add(left: int, right: int):
     """Adds two numbers together."""
     await bot.say(left + right)
 
 
 @bot.command()
-async def roll(dice : str):
+async def roll(dice: str):
     """Rolls a dice in NdN format."""
     try:
         rolls, limit = map(int, dice.split('d'))
@@ -62,26 +73,26 @@ async def roll(dice : str):
 
 
 @bot.command(description='For when you wanna settle the score some other way')
-async def choose(*choices : str):
+async def choose(*choices: str):
     """Chooses between multiple choices."""
     await bot.say(random.choice(choices))
 
 
 @bot.command()
-async def repeat(times : int, content='repeating...'):
+async def repeat(times: int, content='repeating...'):
     """Repeats a message multiple times."""
     for i in range(times):
         await bot.say(content)
 
 
 @bot.command()
-async def joined(member : discord.Member):
+async def joined(member: discord.Member):
     """Says when a member joined."""
     await bot.say('My imouto or otouto {0.name} joined in the love at {0.joined_at}!'.format(member))
 
 
 @bot.command()
-async def channel(member : discord.Member):
+async def channel(member: discord.Member):
     """Says when a member joined."""
     await bot.say('{0.name} joined in {0.joined_at}'.format(member))
 
@@ -100,10 +111,12 @@ async def _bot():
     """Is the bot cool?"""
     await bot.say('Yes, the bot is cool.')
 
+
 def readInToken():
-	"""only used on startup to read in bot token"""
-	with open("token", "r") as f:
-		return f.read()
-		
-token = str(readInToken()).strip() #ensure that we recieve a strip str like expected
+    """only used on startup to read in bot token"""
+    with open("token", "r") as f:
+        return f.read()
+
+
+token = str(readInToken()).strip()  # ensure that we recieve a strip str like expected
 bot.run(token)
