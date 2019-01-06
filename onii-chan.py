@@ -105,5 +105,5 @@ def readInToken():
 	with open("token", "r") as f:
 		return f.read()
 		
-token = readInToken()
+token = str(readInToken()).strip() #ensure that we recieve a strip str like expected
 bot.run(token)
