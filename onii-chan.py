@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import romkan
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
@@ -16,6 +17,18 @@ async def on_ready():
     print('------')
     await bot.change_presence(game=discord.Game(name="Kiss x Sis"), status=True, afk=False)
 
+@bot.command(pass_context=True)
+async def nani(ctx):
+    try:
+        text = ctx.message.content.split(' ')
+        text.append('h');
+        kana_dict = {
+                     'h': lambda t : romkan.to_hiragana(t),
+                     'k': lambda t : romkan.to_katakana(t)
+                    }
+        await bot.say('{0} --> {1}'.format(text[2], kana_dict.get(text[3], kana_dict['h'])(text[2])))
+    except Exception as e:
+        await bot.say('Error handling your command')
 
 @bot.command(pass_context=True)
 async def hirigana(ctx):
