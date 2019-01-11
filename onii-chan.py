@@ -25,6 +25,18 @@ async def hiragana(ctx):
     await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
     await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
 
+@bot.command(pass_context=True)
+async def nani(ctx):
+    try:
+        text = ctx.message.content.split(' ')
+        text.append('h');
+        kana_dict = {
+                     'h': lambda t : romkan.to_hiragana(t),
+                     'k': lambda t : romkan.to_katakana(t)
+                    }
+        await bot.say('{0} --> {1}'.format(text[2], kana_dict.get(text[3], kana_dict['h'])(text[2])))
+    except Exception as e:
+        await bot.say('Error handling your command')
 
 @bot.command(pass_context=True)
 async def invite(ctx):

@@ -1,2 +1,2 @@
 # onii-chan
-discord bot
+discord bot for weeb stuff
