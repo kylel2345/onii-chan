@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
 import random
-import romkan
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
 There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='onii-chan ', description=description)
 
+async def botErrorMessage(botRef, msg="Sorry but your Onii-chan doesn't quite understad what your trying to say"):
+    await botRef.say(msg)
 
 @bot.event
 async def on_ready():
@@ -16,6 +17,15 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(game=discord.Game(name="Kiss x Sis"), status=True, afk=False)
+
+
+@bot.command(pass_context=True)
+async def hiragana(ctx):
+    channel = ctx.message.channel
+    pdf = "./Resources/pdf/hiragana_chart.pdf"
+    png = "./Resources/png/hiragana_chart.png"
+    await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
+    await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
 
 @bot.command(pass_context=True)
 async def nani(ctx):
@@ -28,16 +38,7 @@ async def nani(ctx):
                     }
         await bot.say('{0} --> {1}'.format(text[2], kana_dict.get(text[3], kana_dict['h'])(text[2])))
     except Exception as e:
-        await bot.say('Error handling your command')
-
-@bot.command(pass_context=True)
-async def hirigana(ctx):
-    channel = ctx.message.channel
-    pdf = "./Resources/pdf/hiragana_chart.pdf"
-    png = "./Resources/png/hiragana_chart.png"
-    await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
-    await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
-
+        await botErrorMessage(bot)
 
 @bot.command(pass_context=True)
 async def invite(ctx):
@@ -62,7 +63,7 @@ async def move(ctx, userMovingID, channelSentToName):
         await bot.say(
             'Onii-chan moved {0} to {1} like you asked {2}!'.format(str(userMoving), str(channelSentTo), str(sender)))
     except Exception as e:
-        await bot.say("Uh oh, looks like somethings wrong! Do you need onii-chan help?")
+        await botErrorMessage(bot)
     print()
 
 
@@ -78,7 +79,7 @@ async def roll(dice: str):
     try:
         rolls, limit = map(int, dice.split('d'))
     except Exception:
-        await bot.say('Format has to be in NdN!')
+        await botErrorMessage(bot, 'Sorry but onii-chan only knows the "NdN [+/-N]" format!')
         return
 
     result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
