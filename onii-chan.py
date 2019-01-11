@@ -1,11 +1,13 @@
 import discord
 from discord.ext import commands
 import random
+import romkan
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
 There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='onii-chan ', description=description)
+
 
 async def botErrorMessage(botRef, msg="Sumimasen, but your Onii-chan doesn't quite understand what you're trying to say"):
     await botRef.say(msg)
