@@ -7,7 +7,7 @@ module.
 There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='onii-chan ', description=description)
 
-async def botErrorMessage(botRef, msg="Sorry but your Onii-chan doesn't quite understad what your trying to say"):
+async def botErrorMessage(botRef, msg="Sumimasen, but your Onii-chan doesn't quite understand what you're trying to say"):
     await botRef.say(msg)
 
 @bot.event
@@ -20,25 +20,34 @@ async def on_ready():
 
 
 @bot.command(pass_context=True)
-async def hiragana(ctx):
-    channel = ctx.message.channel
-    pdf = "./Resources/pdf/hiragana_chart.pdf"
-    png = "./Resources/png/hiragana_chart.png"
-    await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
-    await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
+async def hiragana(ctx, *args):
+    if len(args) is 0:
+        channel = ctx.message.channel
+        pdf = "./Resources/pdf/hiragana_chart.pdf"
+        png = "./Resources/png/hiragana_chart.png"
+        await bot.send_file(channel, png, content='Onii-chan has some trouble remembering these sometimes too, here have a chart!')
+        await bot.send_file(channel, pdf, content='Onii-chan thought you might like a pdf too!')
 
-@bot.command(pass_context=True)
-async def nani(ctx):
-    try:
-        text = ctx.message.content.split(' ')
-        text.append('h');
-        kana_dict = {
-                     'h': lambda t : romkan.to_hiragana(t),
-                     'k': lambda t : romkan.to_katakana(t)
-                    }
-        await bot.say('{0} --> {1}'.format(text[2], kana_dict.get(text[3], kana_dict['h'])(text[2])))
-    except Exception as e:
-        await botErrorMessage(bot)
+    elif args[0].lower() == "nani":
+        if len(args) < 2:
+            await botErrorMessage(bot, "Sumimasen, onii-chan needs text to parse!")
+            return
+
+        #good to parse text, check if parsing mode is indicated, if not default to hiragana
+        mode = "h"
+        ret = ""
+        if len(args) > 2:
+            mode = args[2]
+        try:
+            text = args[1]
+            if mode is "h":
+                ret = romkan.to_hiragana(text)
+            else:
+                ret = romkan.to_katakana(text)
+
+            await bot.say('{0} --> {1}'.format(args[1], ret))
+        except Exception as e:
+            await botErrorMessage(bot)
 
 @bot.command(pass_context=True)
 async def invite(ctx):
