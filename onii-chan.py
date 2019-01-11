@@ -18,7 +18,7 @@ async def on_ready():
 
 
 @bot.command(pass_context=True)
-async def hirigana(ctx):
+async def hiragana(ctx):
     channel = ctx.message.channel
     pdf = "./Resources/pdf/hiragana_chart.pdf"
     png = "./Resources/png/hiragana_chart.png"
